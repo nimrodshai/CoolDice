@@ -69,6 +69,9 @@ button.primary { background: var(--accent); border-color: color-mix(in oklab, va
 button.secondary { background: #2b2b2b; }
 button:active { transform: translateY(1px); }
 
+/* Enlarge bottom action buttons */
+.ui button { padding: 16px 24px; font-size: 18px; border-radius: 14px; min-height: 52px; }
+
 .bottom-sheet::backdrop { background: rgba(0,0,0,0.45); backdrop-filter: blur(2px); }
 .bottom-sheet {
   background: var(--surface);
@@ -186,6 +189,7 @@ input[type="range"] { width: 100%; }
     padding: 8px;
   }
   button { padding: 9px 12px; }
+  .ui button { padding: 15px 22px; font-size: 18px; min-height: 52px; }
   .bottom-sheet { width: 96vw; min-width: 0; }
   .grid { grid-template-columns: 1fr; }
 }

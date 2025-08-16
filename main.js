@@ -44,7 +44,7 @@ const appState = {
   pipColor: "#000000",
   background: "#0e0e0e",
   edgeRadiusPercent: 0,
-  rollMode: "physics", // or "spin"
+  rollMode: "spin", // or "physics"
   bgMode: "color",
 };
 
@@ -53,15 +53,23 @@ const FIXED_RADIUS_PERCENT = 12;
 
 // Save/load from localStorage
 const STORAGE_KEY = "dice-roller-settings-v1";
+const SETTINGS_VERSION = 2;
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const data = JSON.parse(raw);
+    const needsMigration = !("version" in data) || (typeof data.version === 'number' && data.version < SETTINGS_VERSION);
+    if (needsMigration) {
+      if (!data.rollMode || data.rollMode === 'physics') data.rollMode = 'spin';
+      data.version = SETTINGS_VERSION;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
     Object.assign(appState, data);
   } catch {}
 }
 function saveState() {
+  appState.version = SETTINGS_VERSION;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
 }
 loadState();
@@ -669,7 +677,7 @@ document.getElementById("save-settings").addEventListener("click", (e) => {
   const pipColor = settingsForm.pipColor.value || "#000000";
   const background = settingsForm.background.value || "#0e0e0e";
   const edgeRadiusPercent = FIXED_RADIUS_PERCENT;
-  const rollMode = appState.rollMode || "physics";
+  const rollMode = appState.rollMode || "spin";
 
   const changed =
     numDice !== appState.numDice ||
