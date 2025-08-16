@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D Dice Roller</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="three-root" aria-label="3D dice scene"></div>
+
+      <div class="ui">
+        <button id="roll-btn" class="primary">Roll Dice</button>
+        <button id="edit-btn" class="secondary">Edit</button>
+      </div>
+
+      <div id="sheet-backdrop" class="backdrop" aria-hidden="true"></div>
+
+      <dialog id="settings-dialog" class="bottom-sheet">
+        <form id="settings-form" method="dialog" class="sheet">
+          <div class="grabber" aria-hidden="true"></div>
+          <div class="sheet-header">
+            <div class="large-title">Edit</div>
+            <div></div>
+            <button type="button" id="save-settings" class="link primary-link">Done</button>
+          </div>
+
+          <div class="list">
+            <div class="row">
+              <div class="label">Number of dice</div>
+              <div class="control">
+                <div class="stepper">
+                  <button type="button" id="stepper-dec" class="pill" aria-label="Decrease">–</button>
+                  <div id="num-dice-display" class="count-display">2</div>
+                  <input id="num-dice" name="numDice" type="hidden" value="2" />
+                  <button type="button" id="stepper-inc" class="pill" aria-label="Increase">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">Roll Style</div>
+              <div class="control">
+                <div class="segmented" id="roll-style">
+                  <button type="button" data-mode="physics" class="active">Physics</button>
+                  <button type="button" data-mode="spin">Spin in Row</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">Dice Color</div>
+              <div class="control">
+                <button type="button" id="dice-color-chip" class="color-chip" aria-label="Pick dice color"><span class="inner"><span class="dot"></span></span></button>
+                <input type="hidden" id="dice-color" name="diceColor" value="#ffffff" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="label">Dots Color</div>
+              <div class="control">
+                <button type="button" id="pip-color-chip" class="color-chip" aria-label="Pick dots color"><span class="inner"><span class="dot"></span></span></button>
+                <input type="hidden" id="pip-color" name="pipColor" value="#000000" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="label">Background</div>
+              <div class="control">
+                <div class="segmented" id="bg-mode">
+                  <button type="button" data-mode="color" class="active">Color</button>
+                  <button type="button" data-mode="gradient">Gradient</button>
+                  <button type="button" data-mode="image">Image</button>
+                </div>
+              </div>
+            </div>
+            <div class="list" id="bg-color-row">
+              <div class="row">
+                <div class="label">Color</div>
+                <div class="control">
+                  <button type="button" id="bg-color-chip" class="color-chip" aria-label="Pick background color"><span class="inner"><span class="dot"></span></span></button>
+                  <input type="hidden" id="bg-color" name="background" value="#0e0e0e" />
+                </div>
+              </div>
+            </div>
+            <div class="list" id="bg-gradient-rows" hidden>
+              <div class="row">
+                <div class="label">Start</div>
+                <div class="control">
+                  <button type="button" id="bg-start-chip" class="color-chip" aria-label="Pick gradient start"><span class="inner"><span class="dot"></span></span></button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="label">End</div>
+                <div class="control">
+                  <button type="button" id="bg-end-chip" class="color-chip" aria-label="Pick gradient end"><span class="inner"><span class="dot"></span></span></button>
+                </div>
+              </div>
+            </div>
+            <div class="list" id="bg-image-row" hidden>
+              <div class="row">
+                <div class="label">Photo</div>
+                <div class="control">
+                  <button type="button" id="bg-image-choose" class="chip ios">Choose…</button>
+                  <input type="file" id="bg-image-input" accept="image/*" class="sr-only" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <div class="section">
+            <div class="section-caption">Presets</div>
+            <div class="chips" id="preset-chips">
+              <button type="button" class="chip ios" data-dice-color="#ffffff" data-pip-color="#000000" data-background="#0b3d0b">Classic</button>
+              <button type="button" class="chip ios" data-dice-color="#000000" data-pip-color="#ffffff" data-background="#0e0e0e">Dark</button>
+              <button type="button" class="chip ios" data-dice-color="#b91c1c" data-pip-color="#ffffff" data-background="#064e3b">Vegas</button>
+              <button type="button" class="chip ios" data-dice-color="#2563eb" data-pip-color="#ffffff" data-background="#0b1020">Ocean</button>
+            </div>
+          </div>
+          
+        </form>
+      </dialog>
+
+      <div id="picker-backdrop" class="backdrop" aria-hidden="true"></div>
+      <dialog id="color-picker" class="bottom-sheet">
+        <div class="grabber" aria-hidden="true"></div>
+        <div class="sheet-header">
+          <div class="large-title" id="picker-title">Color</div>
+          <div></div>
+          <button type="button" id="picker-close" class="link primary-link">✕</button>
+        </div>
+        <div class="section">
+          <div class="card">
+            <div class="swatch-grid" id="swatch-grid"></div>
+          </div>
+        </div>
+      </dialog>
+    </div>
+
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/examples/js/geometries/RoundedBoxGeometry.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
+    <script type="module">
+      import { RoundedBoxGeometry } from 'https://unpkg.com/three@0.160.0/examples/jsm/geometries/RoundedBoxGeometry.js';
+      import { RoomEnvironment } from 'https://unpkg.com/three@0.160.0/examples/jsm/environments/RoomEnvironment.js';
+      window.THREE = window.THREE || {};
+      window.THREE.RoundedBoxGeometry = RoundedBoxGeometry;
+      window.RoomEnvironment = RoomEnvironment;
+    </script>
+    <script src="./main.js"></script>
+  </body>
+  </html>
+
+
