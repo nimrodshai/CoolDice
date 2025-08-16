@@ -185,12 +185,13 @@ input[type="range"] { width: 100%; }
 @media (max-width: 640px) {
   .ui {
     bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-    gap: 8px;
+    gap: 6px;
     padding: 10px;
-    width: calc(100vw - 24px);
+    width: calc(100vw - 16px);
+    flex-wrap: nowrap;
   }
   button { padding: 9px 12px; }
-  .ui button { padding: 20px 28px; font-size: 20px; min-height: 60px; min-width: 0; flex: 1 1 0; }
+  .ui button { padding: 20px 28px; font-size: 20px; min-height: 60px; min-width: 0; flex: 1 1 0; white-space: nowrap; }
   .bottom-sheet { width: 96vw; min-width: 0; }
   .grid { grid-template-columns: 1fr; }
 }
