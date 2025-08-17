@@ -23,6 +23,17 @@ body {
   z-index: 0;
 }
 
+/* Ads layout */
+.ad-container { position: fixed; z-index: 9; display: flex; justify-content: center; pointer-events: none; }
+.ad-container > * { pointer-events: auto; }
+.ad-top { top: 8px; left: 50%; transform: translateX(-50%); width: min(100vw - 16px, 970px); }
+.ad-bottom { bottom: 100px; left: 50%; transform: translateX(-50%); width: min(100vw - 16px, 970px); }
+.ad-right { right: 8px; top: 50%; transform: translateY(-50%); width: 300px; display: none; }
+
+@media (min-width: 1024px) {
+  .ad-right { display: flex; }
+}
+
 .backdrop {
   position: fixed;
   inset: 0;
